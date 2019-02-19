@@ -1,16 +1,11 @@
 # 3 Common Programming Concepts
-
-Wie ist rust aufgebaut: 
-- Keywords (`fn`, `let`, ...)
-- Identifiers (ähnlich zu Java, Funktionen/Variablen aber in snake_case)
-
 ##3.1 Variables and Mutability
 Vorab: unused-Warnungen deaktivieren
 ```rust
 #[allow(unused)]
 ```
 
-Deklarieren mit let:
+Variablen deklarieren mit let:
 ```rust
 let x = 5;
 println!("The value of x is: {}", x);
@@ -106,8 +101,114 @@ Was passier bei out-of-range? Einfache Fälle erkennt der Compiler:
 ```rust
 let element = arr[10];
 ```
-Aber komplizierte natürlich nicht -> Laufzeit-Fehler
+Aber komplizierte natürlich nicht -> Laufzeit-Fehler, und zwar ein expliziter panic! statt invalidem Zugriff.
 ```rust
 let index = 10;
 let element = arr[index];
 ```
+
+##3.3 Functions
+Bisher:
+```rust
+fn main() { }
+```
+Funktionen in Rust haben snake_case namen, parameter werden mit `name: typ` angegeben:
+```rust
+fn another_function(x: i32, y: i32) {
+    println!("The value of x and y is: {} and {}", x, y);
+}
+```
+Funktionsaufruf wie in Java auch:
+```rust
+another_function(5, 6);
+```
+Wenn eine Funktion was zurückgibt, steht der Typ davon nach einem Pfeil:
+```rust
+fn five() -> i32 {
+    5
+}
+```
+Letzte Expression wird zurückgegeben, hier die 5.
+Typischer Fehler: `;` am Ende -> `5;` ist ein Statement (wie Zuweisung), die Expression nach `;` wird zurückgegeben - hier ein leerer Typ/unit `()`.
+Explizite Rückgabe auch möglich:
+```rust
+...
+return 5;
+
+```
+Aber in Rust normalerweise nur um aus Branch zurückzuspringen.
+
+##3.4 Comments
+Bis auf JavaDoc genau wie in java:
+```rust
+// Kommentar
+/* Kommentar */
+
+```
+
+##3.5 Control Flow
+if/else: __Nur__ booleans als Bedingung (anders als in manchen Systemsprachen), keine Klammern notwendig:
+```rust
+let number = 3;
+
+if number < 5 {
+    println!("smaller 5");
+} else {
+    println!("greater 5");
+}
+```
+
+Das Schöne: Alles Expressions, d.h. die letzte Expression aus jedem match-arm wird zurückgegeben:
+```rust
+let condition = true;
+let number = (if condition {
+    5
+} else {
+    6
+});
+```
+Letztes Semikolon wegen Zuweisung!
+Typ von den beiden Armen muss übereinstimmen, `else { "six" }` gibt einen Fehler.
+
+### Loops
+Drei Arten von loops:
+While-Schleifen genau wie in Java:
+```rust
+let mut number = 3;
+
+while number != 0 {
+    println!("{}!", number);
+
+    number = number - 1;
+}
+```
+
+Besonders: Endlosschleife (können nur mit `break` beendet werden -> break kann Wert zurückgeben)
+```rust
+let mut counter = 0;
+
+let result = loop {
+    counter += 1;
+
+    if counter == 10 {
+        break counter * 2;
+    }
+};
+```
+
+Für collections (iterables)/ranges: for-in-loop
+```rust
+let a = [10, 20, 30, 40, 50];
+
+for element in a.iter() {
+    println!("the value is: {}", element);
+}
+```
+
+"Standard"-for loop durch ranges (`..`)
+```rust
+for i in 0..10 {
+    println!("{}", i)
+} 
+```
+Links inklusive, rechts exklusive.
