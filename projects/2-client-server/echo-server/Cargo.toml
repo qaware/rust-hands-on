@@ -1,0 +1,9 @@
+[package]
+name = "echo-server"
+version = "0.1.0"
+authors = ["Fabian Huch <fabian.huch@qaware.de>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+simple_logger = "1.0.1"
