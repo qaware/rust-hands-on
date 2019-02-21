@@ -1,12 +1,12 @@
 extern crate log;
 extern crate simple_logger;
 
-use std::io;
-use std::net::TcpStream;
-use std::io::Write;
-use std::io::Read;
 use log::info;
+use std::io;
+use std::io::Read;
+use std::io::Write;
 use std::net::Shutdown;
+use std::net::TcpStream;
 
 const SERVER_ADDRESS: &str = "127.0.0.1:6666";
 
