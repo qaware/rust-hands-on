@@ -1,0 +1,7 @@
+[package]
+name = "rust-intro"
+version = "0.1.0"
+authors = ["f.huch"]
+edition = "2018"
+
+[dependencies]

@@ -68,11 +68,7 @@ fn main() {
         }
 
         let condition = true;
-        let number = if condition {
-            5
-        } else {
-            6
-        };
+        let number = if condition { 5 } else { 6 };
 
         let mut counter = 3;
         while counter != 0 {
