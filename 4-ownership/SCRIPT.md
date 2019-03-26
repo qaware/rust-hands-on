@@ -6,7 +6,7 @@ An Beispiel, veränderlicher String:
 let s1 = String::from("hello");
 let s2 = s1;
 
-println!("{}, world!", s1);
+println!("{}, world!", s1); // compiler error
 ```
 Das geht nicht! String gehört s1.
 Zuweisung verändert Owner ('move'), string gehört s2.
@@ -30,6 +30,7 @@ Grund: Integer-Typ so einfach, dass er bei Zuweisung kopiert wird (4 bytes, fix,
 Man sagt, diese Typen sind 'copy'.
 
 Komplexere Typen (veränderlicher String) nicht so einfach zu kopieren - Größe unbekannt -> muss auf Heap liegen.
+Kopieren wäre Mehraufwand -> werden "bewegt"!
 
 ### Functions
 Was bei Funktionsaufrufen? Selbes Problem:
@@ -71,10 +72,22 @@ let mut s = String::from("hello");
 
 change(&mut s);
 ```
-Achtung: Es kann beliebig immutable borrows geben ODER eine einziges mutable borrow.
+Achtung: Es kann beliebig immutable borrows geben ODER ein einziges mutable borrow.
 ```rust
 let r1 = &mut s;
-let r2 = &s;
+let r2 = &s; // compiler error
 
 println!("{}, {}", r1, r2);
 ```
+
+##4.4 Slices
+Damit können wir weiteren Datentyp verstehen: Slices. Sehr simpel, ähnlich Python:
+```rust
+let my_string = String::from("Hello world");
+let hello = &my_string[0..5];
+let world = &my_string[6..];
+
+println!("{}, {}!", hello, world);
+```
+Hier leihen wir uns 2x den String, bzw. Sicht auf Teil des Strings (Überschneidung spielt keine Rolle - jeder borrow leiht String komplett, geht nur weil immutable!).
+Bei Anfang/Ende könnnen wir uns Grenzen sparen. Funktioniert auch bei vielen anderen Typen (arrays, vecs, etc.).

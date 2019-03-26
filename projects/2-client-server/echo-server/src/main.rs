@@ -10,7 +10,6 @@ use std::{io, thread};
 
 use log::{error, info};
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
-use std::time::Duration;
 
 fn main() -> io::Result<()> {
     // Initialize logger
@@ -62,6 +61,7 @@ fn echo(mut stream: TcpStream, history: Arc<Mutex<Vec<String>>>) -> io::Result<(
         // Read line
         let mut line = String::new();
         reader.read_line(&mut line)?;
+        // Check if read finished because of EOF or newline
         let is_eof = !line.ends_with('\n');
 
         match history.lock() {

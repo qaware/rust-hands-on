@@ -3,13 +3,14 @@ extern crate log;
 extern crate simple_logger;
 
 use std::io;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{Shutdown, TcpStream, ToSocketAddrs};
 
 use clap::{App, Arg};
-use log::info;
+use log::{debug, info};
 use std::io::ErrorKind::{TimedOut, WouldBlock};
 use std::time::Duration;
+use std::str::from_utf8;
 
 const READ_TIMEOUT_MS: u64 = 100;
 const MESSAGE: [&str; 7] = [
@@ -45,31 +46,39 @@ fn main() -> io::Result<()> {
     let mut reader = BufReader::new(stream.try_clone()?);
 
     // Receive initial message, if any:
-    match receive_answer(&mut reader)? {
-        Some(res) => info!("Received message: {}", res),
+    match receive_line(&mut reader)? {
+        Some(res) => info!("Received message: {:?}", res),
         None => (),
     }
 
-    for (i, line) in MESSAGE.iter().enumerate() {
-        // Write line
+    for line in MESSAGE.iter() {
+        // Write linAdded history to echo servere
         stream.write_all(line.as_bytes())?;
 
         // Shutdown write stream if last line was written
-        if i == MESSAGE.len() - 1 {
+        if line == MESSAGE.last().unwrap() {
             stream.shutdown(Shutdown::Write)?;
         }
 
         // Receive answer, if any
-        match receive_answer(&mut reader)? {
+        match receive_line(&mut reader)? {
             Some(res) => info!("Wrote {:?}, received {:?}", line, res),
             None => info!("Wrote {:?}, received nothing", line),
         }
     }
 
+    // Read until EOF, to check if there is more after line ending
+    let mut remain = Vec::new();
+    match reader.read_to_end(&mut remain).and(remain) {
+        Ok(0) | Err(_) => (),
+        Ok(_) => info!("Finally received {:?}", from_utf8(remain.as_slice()).expect("No utf8 str")),
+    }
+
     Ok(())
 }
 
-fn receive_answer(reader: &mut BufRead) -> io::Result<Option<String>> {
+/// Receives a single line, i.e. reads until \n, Timeout, or EOF.
+fn receive_line(reader: &mut BufRead) -> io::Result<Option<String>> {
     let mut buf = String::new();
     match reader.read_line(&mut buf) {
         Ok(_) => Ok(Some(buf)),

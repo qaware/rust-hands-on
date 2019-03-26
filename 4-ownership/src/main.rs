@@ -19,6 +19,12 @@ fn main() {
     let mut s = String::from("hello");
 
     change(&mut s);
+
+    let my_string = String::from("Hello world");
+    let hello = &my_string[0..5];
+    let world = &my_string[6..];
+
+    println!("{}, {}!", hello, world);
 }
 
 fn calc_len(s: String) -> usize {
