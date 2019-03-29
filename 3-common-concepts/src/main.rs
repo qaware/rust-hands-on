@@ -1,4 +1,4 @@
-#[allow(unused)]
+#![allow(unused)]
 fn main() {
     {
         let mut x = 5;
