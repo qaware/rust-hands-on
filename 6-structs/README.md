@@ -62,6 +62,7 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
+```
 
 ### Structs kopieren:
 
@@ -87,7 +88,7 @@ println!("rect1 is {:?}", rect1);
 println!("rect1 is {:#?}", rect1); // Pretty print
 ```
 
-## Methoden auf Structs
+### Methoden auf Structs
 
 Bisher nur Daten, nun kommt Funktionalität: Methoden!
 
