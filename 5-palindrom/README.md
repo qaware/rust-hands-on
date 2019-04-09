@@ -6,3 +6,5 @@ Die berühmte Aufgabe aus dem Bewerbungsgespräch, in 3 Varianten: mit Schleife,
 
 * Verwende `&str` für Strings
 * N-ter Char im String: `"foo".chars().nth(n).unwrap();`
+
+[Lösung](loesung.md)
