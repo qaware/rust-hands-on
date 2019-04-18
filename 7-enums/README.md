@@ -63,8 +63,8 @@ let home = IpAddr::V4("garantiert keine IPv4 adresse");
 
 ```
 enum IpAddr {
-    V4(u8, u8, u8, u8), //Variant(Datatypes)
-    V6(String),
+    V4(u8, u8, u8, u8), // Hat 4x u8
+    V6(String), // Hat 1x String
 }
 
 let home = IpAddr::V4(127, 0, 0, 1);
@@ -78,11 +78,11 @@ Das geht mit allen Wertetypen, auch mit Structs:
 
 ```
 struct Ipv4Addr {
-    // --snip--
+    // ...
 }
 
 struct Ipv6Addr {
-    // --snip--
+    // ...
 }
 
 enum IpAddr {
@@ -101,11 +101,11 @@ impl IpAddr {
     }
 }
 
-let address = ...;
+let address = IpAddr::V4(127, 0, 0, 1);
 address.call("Hello World");
 ```
 
-## Wichtiges Std Enum -> `Option`
+## Wichtiges Enum -> `Option`
 
 Option als Ersatz für null. **ES GIBT KEIN NULL IN RUST**.
 
@@ -136,13 +136,11 @@ let y: Option<i8> = Some(5);
 let sum = x + y;
 ```
 
-Das kompiliert nicht, weil `x` ein `i8` und `y` ein `Option<i8>` ist. Das Typsystem fängt den Fehler.
+Das kompiliert nicht, weil `x` ein `i8` und `y` ein `Option<i8>` ist. Das Typsystem fängt den Fehler beim Kompilieren anstatt dich nachts anzurufen.
 
 ## Match
 
 Wie arbeiten wir nun mit so einem `Option`?
-
-## Using `match`
 
 ```
 let s = Some(12); // Option<i32>
