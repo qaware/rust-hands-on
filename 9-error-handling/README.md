@@ -14,7 +14,8 @@ fn main() {
 
 Ein panic kann durch das Panic-Macro `panic!` selbst ausgelöst werden.
 
-Results in
+Dieses Programm stirbt mit:
+
 ```
 $ cargo run
    Compiling panic v0.1.0 (file:///projects/panic)
@@ -24,7 +25,7 @@ thread 'main' panicked at 'Frauen und Kinder zu erst!', src/main.rs:2:4
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
 
-Panic, das nicht selbst ausgelöst wurde:
+Beispiel für ein panic, das nicht selbst ausgelöst wurde:
 
 ```
 fn main() {
@@ -34,7 +35,7 @@ fn main() {
 }
 ```
 
-Das würde in C funktionieren und Speicher lesen, der nicht mehr in `v` ist. In Rust stirbt es.
+Das würde in C funktionieren und Speicher lesen, der nicht mehr in `v` ist. In Rust stirbt es:
 
 ```
 $ cargo run
@@ -92,9 +93,9 @@ stack backtrace:
 
 Im Prinzip sucht man nun in dem Stacktrace von unten nach oben solange, bis man ein Sourcefile findet, das man selbst geschrieben hat. In unserem Fall `11: panic::main at src/main.rs:4`.
 
-## Fehler, von denen man sich retten kann.
+## Fehler, von denen man sich retten kann
 
-Wie, wenn nicht durch Exceptions? Dafür gibt es ein Enum!
+Wie funktionert das ohne Exceptions? Dafür gibt es, wer hätte es gedacht, ein Enum!
 
 ```
 enum Result<T, E> {
@@ -105,14 +106,14 @@ enum Result<T, E> {
 
 `Ok(T)` ist der Gutfall, `Err(E)` ist der Fehlerfall.
 
-### Ein Beispiel mit `Result`.
+### Ein Beispiel mit `Result`
 
 ```
-let f = File::open("hello.txt"); // f -> Result<std::fs::File, std::io::Error>
+let f = File::open("hello.txt"); // f: Result<std::fs::File, std::io::Error>
 
 let x = match f {
-    Ok(file) => file,
-    Err(error) => {
+    Ok(file) => file, // file: std::fs::File
+    Err(error) => { // error: std::io::Error
         panic!("There was a problem opening the file: {:?}", error)
     },
 };
@@ -120,7 +121,7 @@ let x = match f {
 // use x
 ```
 
-Im `Ok`-Fall können wir mit der Datei arbeiten. Im Error-Fall panicen wir, aber schreiben eine nette Fehlermeldung.
+Im `Ok`-Fall können wir mit der Datei arbeiten. Im `Err`-Fall panicken wir, aber schreiben eine nette Fehlermeldung.
 
 Beispielausgabe:
 ```
@@ -149,7 +150,7 @@ fn main() {
 }
 ```
 
-Hier muss man sich klar sein, dass im Fehlerfall eine panic das Programm beendet. Sollte man nur in Tests und beim Prototypen verwenden.
+Hier muss man sich klar sein, dass im Fehlerfall eine panic das Programm beendet. Sollte man nur in Tests und beim Prototypen verwenden, wir kommen am Ende des Kapitels nochmal drauf zu sprechen.
 
 ### Fehler weiterpropagieren:
 
@@ -170,13 +171,13 @@ use std::io::Read;
 use std::fs::File;
 
 fn read_username_from_file() -> Result<String, io::Error> {
-    let mut f = File::open("hello.txt")?; // Beachte das ? am Ende!
+    let mut f = File::open("hello.txt")?; // Beachte das ? am Ende
     let mut s = String::new();
-    f.read_to_string(&mut s)?; // Beachte das ? am Ende!
+    f.read_to_string(&mut s)?; // Beachte das ? am Ende
     Ok(s)
 }
 ```
-Der Operator sorgt dafür dass bei einem `Ok` f befüllt wird, und bei einem Error die Funktion/Methode mit `Result::Err` verlassen wird.
+Der Operator sorgt dafür, dass bei einem `Ok` f befüllt wird, und bei einem Error die Funktion/Methode mit `Result::Err` verlassen wird.
 
 Der Operator kann nur in Verbindung mit dem Return-Type `Result<T,E>` verwendet werden!
 
@@ -184,10 +185,12 @@ Der Operator kann nur in Verbindung mit dem Return-Type `Result<T,E>` verwendet 
 
 Von einem panic gibt es keinen Weg zurück! Das Programm ist dann tot. Bei einem Result gibt man dem Aufrufer der Methode eine Möglichkeit, auf einen Fehler zu reagieren. Deswegen ist `Result` erstmal ne gute Wahl.
 
-Sollte der Code in einen ungültigen Zustand kommen, sollte ein `panic` verwendet werden. Beispiel: Ungültige Eingabedaten, sich wiedersprechende Eingabedaten, fehlende Werte, UND wenn der ungültige Zustand nicht erwartet wird. Eine Nutzereingabe z.B.
+Sollte der Code in einen ungültigen Zustand kommen, sollte ein `panic` verwendet werden. Beispiel: Ungültige Eingabedaten, sich widersprechende Eingabedaten, fehlende Werte, UND wenn dieser ungültige Zustand nicht erwartet wird. Eine Nutzereingabe z.B.
 sollte man mit `Result` parsen, um dem Benutzer die Möglichkeit zu geben, sich zu korrigieren. Ungültige Eingabeparameter in eine Funktion, wie z.B. ein Index, der out of bound ist, wird meistens ein panic.
 
-Für Prototyping and Tests bietet sich `unwrap` und `expect` an. Beim Prototyping will man in der Regel auf eine robuste Fehlerbehandlung verzichten, sollte aber trotzdem der Fall auftreten, dann bricht das Programm an klar definierten Stellen ab. Bei Tests will man eigentlich auch nicht dass der Test weiterläuft, wenn man einen Fehler gefunden hat.
+Für Prototyping and Tests bietet sich `unwrap` und `expect` an. Beim Prototyping will man in der Regel auf eine robuste Fehlerbehandlung verzichten. Sollte aber trotzdem der Fehlerfall auftreten, dann bricht das Programm an klar definierten Stellen ab. 
+
+Bei Tests will man auch nicht, dass der Test weiterläuft, wenn man einen Fehler gefunden hat. Fail fast.
 
 Manchmal benötigt man auch `.unwrap`, weil man schlauer ist als der Compiler (generell sollte man annehmen, dass der Compiler schlauer ist als man selbst, aber die Ausnahme bestätigt die Regel):
 
