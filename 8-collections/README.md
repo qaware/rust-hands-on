@@ -164,6 +164,12 @@ for b in "नमस्ते".bytes() {
 
 Das macht vermutlich immer noch nicht das, was ihr wolltet. Um wirklich jedes sichtbare Zeichen auszugeben, müsst ihr die Grapheme iterieren. Dafür gibt's Crates, die sowas können.
 
+### Konvertieren
+
+`&str` zu `String`: `s.to_string()`
+
+`String` zu `&str`: `s[..]`
+
 ### TL;DR
 "Strings are complicated".
 
