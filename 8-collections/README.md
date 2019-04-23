@@ -1,16 +1,20 @@
 # Common Collections:
 
+Arrays und Tuples speichern die Daten auf dem Stack und haben eine feste Größe. Die nachfolgenden Collections
+speichern die Daten im Heap und können wachsen und schrumpfen.
+
 ## Vector
 
-Creating:
+### Erstellen
 ```
-let v: Vec<i32> = Vec::new();
-// or:
-let v = vec![1, 2, 3];
+let v: Vec<i32> = Vec::new(); // Leerer Vector
+// Oder...
+let v = vec![1, 2, 3]; // Vector, der 1 2 3 enthält
 ```
-Add Values:
+
+### Werte hinzufügen
 ```
-let mut v = Vec::new();
+let mut v = Vec::new(); // Muss mut sein, sonst funktioniert .push nicht
 
 v.push(5);
 v.push(6);
@@ -18,7 +22,7 @@ v.push(7);
 v.push(8);
 ```
 
-Read Values:
+### Werte lesen
 
 ```
 let v = vec![1, 2, 3, 4, 5];
@@ -32,10 +36,11 @@ match v.get(2) {
 }
 ```
 
-Unterschied ist, bei [] erhalte ich eine runtime-fehler beim Zugriff.
-Bei get, erhalte ich NOne und kann weiterarbeiten.
+Unterschied: 
+- bei `[]` kommt ne panic bei index out of bounds.
+- `.get()` gibt ein `Option` zurück.
 
-Aufpassen mit Ownership:
+Aufpassen mit Ownership, auch bei Lesen:
 ```
 let mut v = vec![1, 2, 3, 4, 5];
 
@@ -45,7 +50,9 @@ v.push(6);
 
 println!("The first element is: {}", first);
 ```
-Results in
+
+Funktioniert nicht:
+
 ```
 error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
   --> src/main.rs:10:5
@@ -60,9 +67,9 @@ error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immuta
    |                                          ----- borrow later used here
 ```
 
-Gefühlt sollte sowas funktionieren, aber warum tut es das nicht? Durch das push könnte ein neuer Speicher allokiert werden und das Element first, wird an eine andere Stelle abgelegt und könnte damit die in first gespeicherte Referenz kaputt machen!
+Aber warum geht das nicht? -> Durch `.push` könnte ein neuer Speicher allokiert werden, in dem die bisherigen Elemente kopiert werden. Dann ist das erste Element an einer anderen Stelle im Speicher und die Referenz in `first` ungültig.
 
-Iterieren über die Werte:
+### Iterieren über die Werte
 ```
 let v = vec![100, 32, 57];
 for i in &v {
@@ -70,36 +77,24 @@ for i in &v {
 }
 ```
 
-// Kandidat zum löschen, wegen \*i
-Iterieren und gleichzeitig die Werte verändern:
-```
-let mut v = vec![100, 32, 57];
-for i in &mut v {
-    *i += 50;
-}
-```
-// Kandidat zum löschen, wegen \*i
-
 ## Strings
 
-The String type, which is provided by Rust’s standard library rather than coded into the core language, is a growable, mutable, owned, UTF-8 encoded string type.
+Strings sind mutable und UTF-8 kodiert. Das macht das Arbeiten mit ihnen etwas mühsam.
 
-“strings” in Rust, they usually mean the `String` and the string slice `&str`
+Strings: `String` und `&str`.
 
-Unterschied &str und mutable.
-
-### Create a new String
+### Erstellen
 
 ```
 let mut s = String::new();
 
-// or
+// oder
 let s = "initial contents".to_string();
 
-//or
+// oder
 let s = String::from("initial contents");
 
-//or
+// UTF-8 erlaubt
 let hello = String::from("السلام عليكم");
 let hello = String::from("Dobrý den");
 let hello = String::from("Hello");
@@ -113,131 +108,110 @@ let hello = String::from("Здравствуйте");
 let hello = String::from("Hola");
 ```
 
-### Updating a String
+### Anhängen
 
-With a method.
 ```
 let mut s = String::from("foo");
-s.push_str("bar"); // or with s.push('b');s.push('a');s.push('r');
-// s is now "foobar"
+s.push_str("bar"); // oder s.push('b'); s.push('a'); s.push('r');
+// s = "foobar"
 ```
 
-With `+`
+Mit `+`
 ```
 let s1: String = String::from("Hello, ");
 let s2: String = String::from("world!");
-let s3: String = s1 + &s2; // note s1 has been moved here and can no longer be used
+let s3: String = s1 + &s2; // s1 kann nun nicht mehr verwendet werden
 ```
 
-okay what happens here? Method definition `fn add(self, s: &str) -> String `.
-`add` consume self, and needs an reference to an string. which is what we do with `&s2` we transform `String to &String` the compiler transform's the `&String to &str`.
+Wieso?!
 
-`add` doesn't consume s, which is why s2 is still usable but not s1.
+`+` ruft `fn add(self, s: &str) -> String` auf. `self` wird konsumiert, der zweite String wird nur als Referenz gelesen. Deswegen ist `s1` nun nicht mehr zugreifbar, `s2` hingegen schon.
 
-With format macro
+Alternative:
+`format!`:
+
 ```
 let s1 = String::from("tic");
 let s2 = String::from("tac");
 let s3 = String::from("toe");
 
 let s = format!("{}-{}-{}", s1, s2, s3);
-// s is now tic-tac-toe
+// s = tic-tac-toe
+// s1 s2 und s3 sind noch nutzbar
 ```
 
-### Access Character.
+### Einzelne Zeichen (characters) lesen.
 
 ```
 let s1 = String::from("hello");
 let h = s1[0];
 ```
-In short this will fail, because Rust forbidds direct access. Because not every-character doesn't is only one u8-value.
+Geht nicht. Nicht jeder Character ist nur ein u8 lang.
 
-To iterate the chars you can do:
+Chars:
 ```
 for c in "नमस्ते".chars() {
     println!("{}", c);
 }
 ```
 
-And to iterate the bytes you can do:
+Bytes:
 ```
 for b in "नमस्ते".bytes() {
     println!("{}", b);
 }
 ```
 
-### Summerize Strings
-The Rust Book states that "strings are complicated".
+Das macht vermutlich immer noch nicht das, was ihr wolltet. Um wirklich jedes sichtbare Zeichen auszugeben, müsst ihr die Grapheme iterieren. Dafür gibt's Crates, die sowas können.
 
-## HashMaps!
+### TL;DR
+"Strings are complicated".
 
-### Creation and adding values
+## HashMaps
 
-```
-use std::collections::HashMap;
-
-let mut scores = HashMap::new();
-
-scores.insert(String::from("Blue"), 10);
-scores.insert(String::from("Yellow"), 50);
-```
-
-Der Typ wird über die insert-Methode bestimmt, das erste ist String, das zweite i32.
-
-### Accessing Values in HashMap
+### Erstellen
 
 ```
 use std::collections::HashMap;
 
-let mut scores = HashMap::new();
+let mut scores = HashMap::new(); // Leere Hashmap
 
-scores.insert(String::from("Blue"), 10);
-scores.insert(String::from("Yellow"), 50);
+scores.insert(String::from("Blue"), 10); // "Blue" -> 10
+scores.insert(String::from("Yellow"), 50); // Yellow -> 50
+```
 
+Der Typ wird über die insert-Methode bestimmt, das erste ist `String`, das zweite `i32`.
+
+### Lesen
+
+```
 let team_name = String::from("Blue");
-let score = scores.get(&team_name);
+let score = scores.get(&team_name); // score: Option<i32>
 ```
-note, Blue moved at first insertion.
-note, get returns an Option<i32>.
 
-### Iteration over key-value entries
+### Einträge iterieren
 
 ```
-use std::collections::HashMap;
-
-let mut scores = HashMap::new();
-
-scores.insert(String::from("Blue"), 10);
-scores.insert(String::from("Yellow"), 50);
-
 for (key, value) in &scores {
     println!("{}: {}", key, value);
 }
 ```
 
-### Overwrite Values
+### Werte überschreiben
 
 ```
-use std::collections::HashMap;
-
-let mut scores = HashMap::new();
-
 scores.insert(String::from("Blue"), 10);
 scores.insert(String::from("Blue"), 25);
 
-println!("{:?}", scores);
+println!("{:?}", scores); // Blue -> 25
 ```
-scores is 25
 
-### Only insert if key has no values
+### Wert nur überschreiben, falls noch nicht vorhanden
 ```
-use std::collections::HashMap;
-
-let mut scores = HashMap::new();
 scores.insert(String::from("Blue"), 10);
 
 scores.entry(String::from("Yellow")).or_insert(50);
 scores.entry(String::from("Blue")).or_insert(50);
 
-println!("{:?}", scores);
+println!("{:?}", scores); // Blue -> 10, Yellow -> 50
 ```
