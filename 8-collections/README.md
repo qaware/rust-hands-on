@@ -125,7 +125,7 @@ let s3: String = s1 + &s2; // s1 kann nun nicht mehr verwendet werden
 
 Wieso?!
 
-`+` ruft `fn add(self, s: &str) -> String` auf. `self` wird konsumiert, der zweite String wird nur als Referenz gelesen. Deswegen ist `s1` nun nicht mehr zugreifbar, `s2` hingegen schon.
+`+` ruft `fn add(self, s: &str) -> String` auf. `self` (s1) wird konsumiert, der zweite String (s2) wird nur als Referenz gelesen. Deswegen ist `s1` nun nicht mehr zugreifbar, `s2` hingegen schon.
 
 Alternative:
 `format!`:
