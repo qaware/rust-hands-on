@@ -69,7 +69,7 @@ fn main() -> io::Result<()> {
 
     // Read until EOF, to check if there is more after line ending
     let mut remain = Vec::new();
-    match reader.read_to_end(&mut remain).and(remain) {
+    match reader.read_to_end(&mut remain) {
         Ok(0) | Err(_) => (),
         Ok(_) => info!("Finally received {:?}", from_utf8(remain.as_slice()).expect("No utf8 str")),
     }

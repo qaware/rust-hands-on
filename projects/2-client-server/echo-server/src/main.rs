@@ -2,14 +2,15 @@ extern crate clap;
 extern crate log;
 extern crate simple_logger;
 
-use clap::{App, Arg};
-use std::io::{BufRead, BufReader, Write};
-use std::net::{TcpListener, TcpStream};
+use std::net::TcpListener;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::sync::{Arc, Mutex};
 use std::{io, thread};
 
+use clap::{App, Arg};
 use log::{error, info};
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+
+use echo_server::Connection;
 
 fn main() -> io::Result<()> {
     // Initialize logger
@@ -41,45 +42,12 @@ fn main() -> io::Result<()> {
                 let msg_history = Arc::clone(&msg_history);
 
                 // Spawn new thread for every connection
-                thread::spawn(move || match echo(stream, msg_history) {
+                thread::spawn(move || match Connection::new(stream).echo(msg_history) {
                     Ok(_) => info!("Connection handled successfully."),
                     Err(e) => error!("Error during connection: {}", e),
                 });
             }
             Err(e) => error!("Connection request failed. Cause: {}", e),
-        }
-    }
-
-    Ok(())
-}
-
-/// Echo-server functionality
-fn echo(mut stream: TcpStream, history: Arc<Mutex<Vec<String>>>) -> io::Result<()> {
-    let mut reader = BufReader::new(stream.try_clone()?);
-
-    loop {
-        // Read line
-        let mut line = String::new();
-        reader.read_line(&mut line)?;
-        // Check if read finished because of EOF or newline
-        let is_eof = !line.ends_with('\n');
-
-        match history.lock() {
-            Ok(mut data) => {
-                // Add new message and print the last three out
-                info!("Received {:?}", line);
-                data.insert(0, line);
-                let last_msgs: Vec<&String> = data.iter().take(3).collect();
-                info!("Last three received messages: {:#?}", last_msgs);
-                // Echo string
-                stream.write_all(last_msgs[0].as_bytes())?;
-                stream.flush()?;
-            }
-            Err(e) => error!("Could not access history. Cause: {}", e),
-        }
-
-        if is_eof {
-            break;
         }
     }
 
