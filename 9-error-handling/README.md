@@ -1,15 +1,10 @@
 # Error Handling
 
-Natürlich funktioniert das auch wieder anders, als wir kennen.
+Es gibt in Rust zwei Fehlerfälle: Fehler, von denen man sich retten kann und panics. Ein panic ist final und kann nicht aufgehalten werden.
 
-In Rust werden erstmal zwei Arten von Fehlern unterschieden. Recoverable Fehler, wie ich habe eine Datei nicht gefunden. Oder Unrecoverable Fehler wie Bugs, OutOfBoundsException.
+Es gibt keine Exceptions.
 
-Es gibt KEINE Exception, es gibt max. einen Return-Type Result<T,E> für die recoverable Fehler und [panic!] für unrecoverable Fehler.
-
-https://doc.rust-lang.org/stable/book/ch09-00-error-handling.html
-
-
-## PANIC!! on the titanic!
+## Panic
 
 ```
 fn main() {
@@ -17,19 +12,20 @@ fn main() {
 }
 ```
 
+Ein panic kann durch das Panic-Macro `panic!` selbst ausgelöst werden.
+
 Results in
 ```
 $ cargo run
    Compiling panic v0.1.0 (file:///projects/panic)
     Finished dev [unoptimized + debuginfo] target(s) in 0.25 secs
      Running `target/debug/panic`
-thread 'main' panicked at 'crash and burn', src/main.rs:2:4
+thread 'main' panicked at 'Frauen und Kinder zu erst!', src/main.rs:2:4
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
-Now we have the thread, the panic message and the responsible code-line.
 
+Panic, das nicht selbst ausgelöst wurde:
 
-A real life example:
 ```
 fn main() {
     let v = vec![1, 2, 3];
@@ -38,7 +34,7 @@ fn main() {
 }
 ```
 
-In C this would compile and run.. In an real program this would corrupt our memory. yet in Rust you fail immediately.
+Das würde in C funktionieren und Speicher lesen, der nicht mehr in `v` ist. In Rust stirbt es.
 
 ```
 $ cargo run
@@ -50,7 +46,7 @@ thread 'main' panicked at 'index out of bounds: the len is 3 but the index is
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
 
-But now the panic message doesn't help so we add RUST_BACKTRACE=1 to our environment variable and we get the following output:
+Mehr Informationen gibt es mit `RUST_BACKTRACE=1`:
 
 ```
 $ RUST_BACKTRACE=1 cargo run
@@ -94,9 +90,12 @@ stack backtrace:
   16: <unknown>
 ```
 
-## Recoverable Errors with `Result`
+Im Prinzip sucht man nun in dem Stacktrace von unten nach oben solange, bis man ein Sourcefile findet, das man selbst geschrieben hat. In unserem Fall `11: panic::main at src/main.rs:4`.
 
-Important Definition:
+## Fehler, von denen man sich retten kann.
+
+Wie, wenn nicht durch Exceptions? Dafür gibt es ein Enum!
+
 ```
 enum Result<T, E> {
     Ok(T),
@@ -104,76 +103,44 @@ enum Result<T, E> {
 }
 ```
 
-### Real Example:
+`Ok(T)` ist der Gutfall, `Err(E)` ist der Fehlerfall.
+
+### Ein Beispiel mit `Result`.
 
 ```
-let f = File::open("hello.txt");
+let f = File::open("hello.txt"); // f -> Result<std::fs::File, std::io::Error>
 
-    let f = match f {
-        Ok(file) => file,
-        Err(error) => {
-            panic!("There was a problem opening the file: {:?}", error)
-        },
-    };
+let x = match f {
+    Ok(file) => file,
+    Err(error) => {
+        panic!("There was a problem opening the file: {:?}", error)
+    },
+};
+
+// use x
 ```
 
-The generic parameter are defined by `File::open` and in this case they are: `std::fs::File` is a File Handle, and `std::io::Error` is an error value.
+Im `Ok`-Fall können wir mit der Datei arbeiten. Im Error-Fall panicen wir, aber schreiben eine nette Fehlermeldung.
 
-In the `Ok`-case we can work with our file, in error case we panic! but provide an helpful error-message!
-
-Example Output for File missing:
+Beispielausgabe:
 ```
 thread 'main' panicked at 'There was a problem opening the file: Error { repr: Os { code: 2, message: "No such file or directory" } }', src/main.rs:9:12
 ```
 
-///Kandidat zum Löschen
-### Match different errors:
-
-```
-use std::fs::File;
-use std::io::ErrorKind;
-
-fn main() {
-    let f = File::open("hello.txt");
-
-    let f = match f {
-        Ok(file) => file,
-        Err(error) => match error.kind() {
-            ErrorKind::NotFound => match File::create("hello.txt") {
-                Ok(fc) => fc,
-                Err(e) => panic!("Tried to create file but there was a problem: {:?}", e),
-            },
-            other_error => panic!("There was a problem opening the file: {:?}", other_error),
-        },
-    };
-}
-```
-
-or
-
-```
-use std::fs::File;
-use std::io::ErrorKind;
-
-fn main() {
-    let f = File::open("hello.txt").map_err(|error| {
-        if error.kind() == ErrorKind::NotFound {
-            File::create("hello.txt").unwrap_or_else(|error| {
-                panic!("Tried to create file but there was a problem: {:?}", error);
-            })
-        } else {
-            panic!("There was a problem opening the file: {:?}", error);
-        }
-    });
-}
-```
-//Kandiat
-
-Maybe match of "error"
-
 ### Shortcut for panic:
-expect mit msg.
+`.expect` mit Fehlermeldung.
 
+```
+use std::fs::File;
+
+fn main() {
+    let f = File::open("hello.txt").expect("Konnte hello.txt nicht öffnen");
+}
+```
+
+`expect` gibt entweder `T` zurück, falls `Ok(T)` oder panic mit der Fehlermeldung, wenn `Err`.
+
+Wenn man faul ist:
 ```
 use std::fs::File;
 
@@ -182,9 +149,20 @@ fn main() {
 }
 ```
 
-### Propagating Error:
+Hier muss man sich klar sein, dass im Fehlerfall eine panic das Programm beendet. Sollte man nur in Tests und beim Prototypen verwenden.
 
-Das man jetzt in der jeder Methode auf das das result matchen müsste, könnte ziemlich ausarten. Deswegen Elvis to the rescue!
+### Fehler weiterpropagieren:
+
+Man müsste nun bei jeder Methode, die ein `Result` zurückgibt, sowas schreiben:
+
+```
+let x = match f {
+    Ok(file) => file,
+    Err(error) => return Result::Err(error),
+};
+```
+
+Das artet ziemlich aus. Wer schon mal Go-Code gesehen hat, weiß, wovon ich rede. Rust hat dafür einen Operator namens `?`:
 
 ```
 use std::io;
@@ -192,26 +170,30 @@ use std::io::Read;
 use std::fs::File;
 
 fn read_username_from_file() -> Result<String, io::Error> {
-    let mut f = File::open("hello.txt")?;
+    let mut f = File::open("hello.txt")?; // Beachte das ? am Ende!
     let mut s = String::new();
-    f.read_to_string(&mut s)?;
+    f.read_to_string(&mut s)?; // Beachte das ? am Ende!
     Ok(s)
 }
 ```
-Der Elvis Operator sorgt dafür dass bei einem Ok, f befüllt wird, und bei einem Error die Funktion/Methode mit selbigen verlassen wird.
+Der Operator sorgt dafür dass bei einem `Ok` f befüllt wird, und bei einem Error die Funktion/Methode mit `Result::Err` verlassen wird.
 
-Wichtig ist, dass der Elvis Operator nur in Verbindung mit dem Return-Type Result<T,E> verwendet werden kann!
+Der Operator kann nur in Verbindung mit dem Return-Type `Result<T,E>` verwendet werden!
 
-## To `panic!` or Not to `panic!`
+## To panic or not to panic?
 
-Von einem panic gibt es keinen Weg zurück! Dann ist das Programm erstmal im Arsch. Bei einem Resut, gibt man dem Aufrufer der Methode aber eine Möglichkeit auf einen Fehler zu reagieren. Deswegen ist das Result erstmal eine gute default Wahl!
+Von einem panic gibt es keinen Weg zurück! Das Programm ist dann tot. Bei einem Result gibt man dem Aufrufer der Methode eine Möglichkeit, auf einen Fehler zu reagieren. Deswegen ist `Result` erstmal ne gute Wahl.
 
-Für Prototyping and Tests bietet sich, unwrap und expect an. Beim Prototyping will man i.d.R auf eine robuste Fehlerbehandlung verzichten, sollte trotzdem der Fall auftreten bricht das Programm an klar definierten Stellen ab. Bei Tests will man eigentlich auch nicht dass der Test großartig weiterläuft man will sofort die Fehlerstelle!
+Sollte der Code in einen ungültigen Zustand kommen, sollte ein `panic` verwendet werden. Beispiel: Ungültige Eingabedaten, sich wiedersprechende Eingabedaten, fehlende Werte, UND wenn der ungültige Zustand nicht erwartet wird. Eine Nutzereingabe z.B.
+sollte man mit `Result` parsen, um dem Benutzer die Möglichkeit zu geben, sich zu korrigieren. Ungültige Eingabeparameter in eine Funktion, wie z.B. ein Index, der out of bound ist, wird meistens ein panic.
 
-An einigen Stellen weiß man auch meehr als der Compiler:
+Für Prototyping and Tests bietet sich `unwrap` und `expect` an. Beim Prototyping will man in der Regel auf eine robuste Fehlerbehandlung verzichten, sollte aber trotzdem der Fall auftreten, dann bricht das Programm an klar definierten Stellen ab. Bei Tests will man eigentlich auch nicht dass der Test weiterläuft, wenn man einen Fehler gefunden hat.
+
+Manchmal benötigt man auch `.unwrap`, weil man schlauer ist als der Compiler (generell sollte man annehmen, dass der Compiler schlauer ist als man selbst, aber die Ausnahme bestätigt die Regel):
+
 ```
 use std::net::IpAddr;
 
 let home: IpAddr = "127.0.0.1".parse().unwrap();
 ```
-Ich mein der String ist ganz klar eine Ip-Adresse hier können wir ohne Probleme auf unwrap zurückgreifen.
+"127.0.0.1" ist ganz sicher eine valide IP-Adresse, deswegen ist hier `.unwrap` unbedenklich.
