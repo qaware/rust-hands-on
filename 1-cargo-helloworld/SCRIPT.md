@@ -1,6 +1,6 @@
 Cargo
 =====
- ```jshelllanguage
+ ```bash
 cargo new rust-intro
 ```
 `Cargo.toml` zeigen

@@ -1,5 +1,5 @@
 # 3 Common Programming Concepts
-##3.1 Variables and Mutability
+## 3.1 Variables and Mutability
 Vorab: unused-Warnungen deaktivieren
 ```rust
 #[allow(unused)]
@@ -107,7 +107,7 @@ let index = 10;
 let element = arr[index];
 ```
 
-##3.3 Functions
+## 3.3 Functions
 Bisher:
 ```rust
 fn main() { }
@@ -138,7 +138,7 @@ return 5;
 ```
 Aber in Rust normalerweise nur um aus Branch zurückzuspringen.
 
-##3.4 Comments
+## 3.4 Comments
 Bis auf JavaDoc genau wie in java:
 ```rust
 // Kommentar
@@ -146,7 +146,7 @@ Bis auf JavaDoc genau wie in java:
 
 ```
 
-##3.5 Control Flow
+## 3.5 Control Flow
 if/else: __Nur__ booleans als Bedingung (anders als in manchen Systemsprachen), keine Klammern notwendig:
 ```rust
 let number = 3;

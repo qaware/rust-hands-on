@@ -1,4 +1,4 @@
-#0. Setup
+# 0. Setup
 1. Über Package-Manager `cargo` und die `rust-stdlib` installieren
    - Fedora: `sudo dnf install cargo rust-std-static`
    - Ubuntu: ?

@@ -1,4 +1,4 @@
-#4 Ownership
+# 4 Ownership
 Bis jetzt die meisten Konzepte auch aus anderen Sprachen bekannt.
 Fundamental anders und für Speicherverwaltung grundlegend: Ownership. Bedeutet, dass jedes Objekt irgendjemandem "gehört".
 An Beispiel, veränderlicher String:
@@ -50,7 +50,7 @@ let (s3, len) = calc_len_and_ret(s2);
 
 ```
 Aber viel Aufwand! Bequemere Möglichkeit: String nur ausleihen (borrowing)!
-##4.2 References Borrowing
+## 4.2 References Borrowing
 Dazu Typ mit `&` annotieren:
 ```rust
 fn calc_len_borrow(s: &String) -> usize {
@@ -80,7 +80,7 @@ let r2 = &s; // compiler error
 println!("{}, {}", r1, r2);
 ```
 
-##4.4 Slices
+## 4.4 Slices
 Damit können wir weiteren Datentyp verstehen: Slices. Sehr simpel, ähnlich Python:
 ```rust
 let my_string = String::from("Hello world");
