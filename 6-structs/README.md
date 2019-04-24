@@ -1,3 +1,5 @@
+TODO: Für alle Kapitel kompilierbaren Code schreiben und einchecken
+
 # Structs
 
 Structs bündeln Daten, die zusammen gehören.
@@ -129,10 +131,10 @@ Wir sagen ganz klar, was man mit nem Rectangle machen kann. Die Methoden hängen
 
 ### Associated Functions:
 
-a.k.a. "Static Factories"
+z.B. für "Static Factories".
 
 ```
-impl Foo {
+impl Rectangle {
     fn square(size:u32) -> Rectangle { // kein self, &self oder &mut self
 		Rectangle {width: size, height: size}
 	}
@@ -141,3 +143,5 @@ impl Foo {
 // ...
 let square = Rectangle::square(3);
 ```
+
+TODO: Ctor

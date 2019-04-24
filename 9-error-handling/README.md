@@ -200,3 +200,5 @@ use std::net::IpAddr;
 let home: IpAddr = "127.0.0.1".parse().unwrap();
 ```
 "127.0.0.1" ist ganz sicher eine valide IP-Adresse, deswegen ist hier `.unwrap` unbedenklich.
+
+// TODO: panic dann, wenn man es nicht mehr sinnvoll retten kann. Ist ungefähr wie ein System.exit();

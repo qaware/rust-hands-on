@@ -173,6 +173,8 @@ Das macht vermutlich immer noch nicht das, was ihr wolltet. Um wirklich jedes si
 ### TL;DR
 "Strings are complicated".
 
+TODO: Wieso sind Strings so kompliziert? Trade-Off erklären, z.B. u8 vs u32 etc.
+
 ## HashMaps
 
 ### Erstellen
