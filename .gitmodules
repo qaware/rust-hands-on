@@ -1,0 +1,3 @@
+[submodule "projects/2-client-server/smtp-server"]
+	path = projects/2-client-server/smtp-server
+	url = ../../az82/rust-smtp-server.git
