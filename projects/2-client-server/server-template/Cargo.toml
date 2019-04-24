@@ -1,0 +1,7 @@
+[package]
+name = "server-template"
+version = "0.1.0"
+authors = ["Fabian Huch <fabian.huch@qaware.de>"]
+edition = "2018"
+
+[dependencies]

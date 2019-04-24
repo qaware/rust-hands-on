@@ -2,8 +2,7 @@ extern crate clap;
 extern crate log;
 extern crate simple_logger;
 
-use std::net::TcpListener;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener};
 use std::sync::{Arc, Mutex};
 use std::{io, thread};
 
@@ -16,13 +15,18 @@ fn main() -> io::Result<()> {
     // Initialize logger
     simple_logger::init().expect("could not initialize logger");
 
+    // Build command-line interface using clap
     let matches = App::new("Simple Echo Server")
         .version("1.0")
         .author("Fabian Huch <fabian.huch@qaware.de>")
         .arg(
             Arg::with_name("PORT")
                 .required(true)
-                .validator(|s| s.parse::<u16>().and(Ok(())).map_err(|e| e.to_string())),
+                .validator(|s| match s.parse::<u16>() {
+                    // Validator needs empty Ok if port is valid or Err with description otherwise
+                    Ok(_) => Ok(()),
+                    Err(e) => Err(e.to_string()),
+                }),
         )
         .get_matches();
 

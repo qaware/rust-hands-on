@@ -5,11 +5,12 @@ use std::sync::{Arc, Mutex};
 
 use log::{error, info};
 
-/// Connection encapsulation for better testability
+/// Connection encapsulation
 pub struct Connection<R: BufRead, W: Write> {
     reader: R,
     writer: W,
 }
+/// Implementation over generic reader/writer for testability
 impl<R: BufRead, W: Write> Connection<R, W> {
     /// Echo-server functionality. Appends to history.
     pub fn echo(mut self, history: Arc<Mutex<Vec<String>>>) -> io::Result<()> {
@@ -32,10 +33,10 @@ impl<R: BufRead, W: Write> Connection<R, W> {
         Ok(())
     }
 }
-/// Implementation on tcp stream - has a specific type here!
+/// Additional implementation over tcp stream allows constructing connection from it
 impl Connection<BufReader<TcpStream>, TcpStream> {
     pub fn new(stream: TcpStream) -> Self {
-        let reader = BufReader::new(stream.try_clone().expect(""));
+        let reader = BufReader::new(stream.try_clone().expect("Cannot clone tcp stream"));
         Self {
             reader,
             writer: stream,
@@ -44,7 +45,7 @@ impl Connection<BufReader<TcpStream>, TcpStream> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use std::str;
     use std::sync::{Arc, Mutex};
 

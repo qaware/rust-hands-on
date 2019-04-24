@@ -3,14 +3,13 @@ extern crate log;
 extern crate simple_logger;
 
 use std::io;
-use std::io::{BufRead, BufReader, Read, Write};
-use std::net::{Shutdown, TcpStream, ToSocketAddrs};
+use std::net::{TcpStream, ToSocketAddrs};
+use std::time::Duration;
 
 use clap::{App, Arg};
-use log::{debug, info};
-use std::io::ErrorKind::{TimedOut, WouldBlock};
-use std::time::Duration;
-use std::str::from_utf8;
+use log::info;
+
+use client::Connection;
 
 const READ_TIMEOUT_MS: u64 = 100;
 const MESSAGE: [&str; 7] = [
@@ -20,7 +19,7 @@ const MESSAGE: [&str; 7] = [
     "DATA\n",
     "<The message data (body text, subject, e-mail header, attachments etc) is sent>\n",
     ".\n",
-    "QUIT",
+    "QUIT\n",
 ];
 
 fn main() -> io::Result<()> {
@@ -38,54 +37,35 @@ fn main() -> io::Result<()> {
     simple_logger::init().expect("Could not initialize logger");
 
     // Connect to server
-    let mut stream = TcpStream::connect(matches.value_of("ADDRESS").unwrap())?;
+    let stream = TcpStream::connect(matches.value_of("ADDRESS").unwrap())?;
     stream.set_read_timeout(Some(Duration::from_millis(READ_TIMEOUT_MS)))?;
     stream.set_write_timeout(None)?;
 
-    // Reader to read single lines
-    let mut reader = BufReader::new(stream.try_clone()?);
+    let mut connection = Connection::new(stream);
 
-    // Receive initial message, if any:
-    match receive_line(&mut reader)? {
-        Some(res) => info!("Received message: {:?}", res),
-        None => (),
+    // Receive initial message(s), if any:
+    loop {
+        match connection.receive_line()? {
+            Some(res) => info!("Received message: {:?}", res),
+            None => break,
+        }
     }
 
+    // Send lines and receive answers, if any:
     for line in MESSAGE.iter() {
-        // Write linAdded history to echo servere
-        stream.write_all(line.as_bytes())?;
-
-        // Shutdown write stream if last line was written
-        if line == MESSAGE.last().unwrap() {
-            stream.shutdown(Shutdown::Write)?;
-        }
-
-        // Receive answer, if any
-        match receive_line(&mut reader)? {
+        // Write line and receive answer, if any
+        connection.send_message(line)?;
+        match connection.receive_line()? {
             Some(res) => info!("Wrote {:?}, received {:?}", line, res),
             None => info!("Wrote {:?}, received nothing", line),
         }
     }
 
-    // Read until EOF, to check if there is more after line ending
-    let mut remain = Vec::new();
-    match reader.read_to_end(&mut remain) {
-        Ok(0) | Err(_) => (),
-        Ok(_) => info!("Finally received {:?}", from_utf8(remain.as_slice()).expect("No utf8 str")),
+    // Receive remaining messages, if any
+    match connection.receive_remaining()? {
+        Some(res) => info!("Finally received {:?}", res),
+        None => (),
     }
 
     Ok(())
-}
-
-/// Receives a single line, i.e. reads until \n, Timeout, or EOF.
-fn receive_line(reader: &mut BufRead) -> io::Result<Option<String>> {
-    let mut buf = String::new();
-    match reader.read_line(&mut buf) {
-        Ok(_) => Ok(Some(buf)),
-        Err(e) => match e.kind() {
-            // Timed out -> no answer
-            WouldBlock | TimedOut => Ok(None),
-            _ => return Err(e),
-        },
-    }
 }
