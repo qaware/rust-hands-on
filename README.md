@@ -11,12 +11,12 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 * [Hello World und Cargo](1-cargo-helloworld)
 * [Common Concepts](3-common-concepts)
 * [Ownership](4-ownership)
-* [Aufgabe: Das Palindrom in Rust](5-palindrom)
-* [Structs](6-structs)
-* [Enums und Pattern Matching](7-enums)
-* [Collections](8-collections)
+* [Aufgabe: Das Palindrom in Rust](projects/01-palindrom)
+* [Structs](06-structs)
+* [Enums und Pattern Matching](07-enums)
+* [Collections](08-collections)
 * Generics, Traits, Lifetimes
-* [Error Handling](9-error-handling)
+* [Error Handling](09-error-handling)
 * [Testing](11-testing)
 * I/O
 * Cargo und [crates.io](https://crates.io/)
