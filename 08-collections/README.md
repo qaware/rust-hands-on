@@ -168,7 +168,7 @@ Das macht vermutlich immer noch nicht das, was ihr wolltet. Um wirklich jedes si
 
 `&str` zu `String`: `s.to_string()`
 
-`String` zu `&str`: `s[..]`
+`String` zu `&str`: `s.as_str()`
 
 ### TL;DR
 "Strings are complicated".
