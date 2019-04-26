@@ -154,7 +154,7 @@ struct Rectangle {
 }
 
 impl Rectangle {
-  fn new(width: u32, height: u32) -> Rectagle {
+  fn new(width: u32, height: u32) -> Rectangle {
     Rectangle {
       width,
       height,
