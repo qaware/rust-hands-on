@@ -185,8 +185,10 @@ Der Operator kann nur in Verbindung mit dem Return-Type `Result<T,E>` verwendet 
 
 Von einem panic gibt es keinen Weg zurück! Das Programm ist dann tot. Bei einem Result gibt man dem Aufrufer der Methode eine Möglichkeit, auf einen Fehler zu reagieren. Deswegen ist `Result` erstmal ne gute Wahl.
 
-Sollte der Code in einen ungültigen Zustand kommen, sollte ein `panic` verwendet werden. Beispiel: Ungültige Eingabedaten, sich widersprechende Eingabedaten, fehlende Werte, UND wenn dieser ungültige Zustand nicht erwartet wird. Eine Nutzereingabe z.B.
-sollte man mit `Result` parsen, um dem Benutzer die Möglichkeit zu geben, sich zu korrigieren. Ungültige Eingabeparameter in eine Funktion, wie z.B. ein Index, der out of bound ist, wird meistens ein panic.
+Sollte der Code in einen ungültigen Zustand kommen, sollte ein `panic` verwendet werden. Beispiel: Ungültige Eingabedaten, sich widersprechende Eingabedaten, fehlende Werte, UND wenn dieser ungültige Zustand nicht erwartet wird. `panic` wird verwendet,
+wenn man das Programm nicht mehr sinnvoll retten kann. Das ist ungefähr wo wie ein `System.exit()` in Java.
+
+Eine Nutzereingabe z.B. sollte man mit `Result` parsen, um dem Benutzer die Möglichkeit zu geben, sich zu korrigieren. Ungültige Eingabeparameter in eine Funktion, wie z.B. ein Index, der out of bound ist, wird meistens ein panic.
 
 Für Prototyping and Tests bietet sich `unwrap` und `expect` an. Beim Prototyping will man in der Regel auf eine robuste Fehlerbehandlung verzichten. Sollte aber trotzdem der Fehlerfall auftreten, dann bricht das Programm an klar definierten Stellen ab. 
 
@@ -200,5 +202,3 @@ use std::net::IpAddr;
 let home: IpAddr = "127.0.0.1".parse().unwrap();
 ```
 "127.0.0.1" ist ganz sicher eine valide IP-Adresse, deswegen ist hier `.unwrap` unbedenklich.
-
-// TODO: panic dann, wenn man es nicht mehr sinnvoll retten kann. Ist ungefähr wie ein System.exit();

@@ -144,4 +144,28 @@ impl Rectangle {
 let square = Rectangle::square(3);
 ```
 
-TODO: Ctor
+sehr beliebt auch für Konstruktoren:
+
+```
+struct Rectangle {
+  width: u32,
+  height: u32,
+  some_property: bool
+}
+
+impl Rectangle {
+  fn new(width: u32, height: u32) -> Rectagle {
+    Rectangle {
+      width,
+      height,
+      some_property: false
+    }
+  }
+}
+```
+
+Aufruf mit:
+
+```
+let rect1 = Rectangle::new(1, 2);
+```

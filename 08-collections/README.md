@@ -173,7 +173,15 @@ Das macht vermutlich immer noch nicht das, was ihr wolltet. Um wirklich jedes si
 ### TL;DR
 "Strings are complicated".
 
-TODO: Wieso sind Strings so kompliziert? Trade-Off erklären, z.B. u8 vs u32 etc.
+Rust hat einen anderen Trade-Off als Java gewählt: Java versucht, Encoding vom Benutzer zu verbergen, und scheitert daran ab und zu, gerade wenn man mit Zeichen aus dem fernöstlichem Raum arbeitet.
+Rust versucht nicht, die Komplexität zu verstecken.
+
+Ein Beispiel:
+
+"नमस्ते" sind 4 sichtbare "Zeichen". In UTF-8 sind das die Bytes `[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164, 224, 165, 135]`. Wenn man das in `char` parst, kommen immer noch 6 Zeichen
+`['न', 'म', 'स', '्', 'त', 'े']` raus. Das 4. und das 6. sind keine "Zeichen", die alleine stehen können. Die Grapeheme sind das, was am intuitivsten ist: `["न", "म", "स्", "ते"]`.
+Man hätte nun auch die Strings in UTF-32 speichern können, aber das verbraucht für viele Strings in unserem Raum 4x so viel Speicher wie nötig. Aber selbst UTF-32 würde nicht das Problem mit den Graphemen lösen.
+Strings sind einfach kompliziert.
 
 ## HashMaps
 
