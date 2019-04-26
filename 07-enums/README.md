@@ -96,7 +96,7 @@ Methoden gibt's (natürlich) auch.
 
 ```
 impl IpAddr {
-    fn call(&self, message: String) {
+    fn call(&self, message: &str) {
         // ...
     }
 }
