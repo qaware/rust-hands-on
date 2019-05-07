@@ -20,11 +20,15 @@ fn main() {
 
     change(&mut s);
 
-    let my_string = String::from("Hello world");
-    let hello = &my_string[0..5];
-    let world = &my_string[6..];
+    let numbers = [1, 2, 3, 4, 5];
+    let one_to_three = &numbers[0..3];
+    let last = &numbers[3..];
 
-    println!("{}, {}!", hello, world);
+    println!("{:?} - {:?}", one_to_three, last);
+
+    let some_string = String::from("Hello world");
+
+    let world: &str = &some_string[6..];
 }
 
 fn calc_len(s: String) -> usize {

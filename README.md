@@ -7,10 +7,10 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 ## Inhaltsverzeichnis
 
 * Einleitung
-* [Rust Setup](0-setup)
-* [Hello World und Cargo](1-cargo-helloworld)
-* [Common Concepts](3-common-concepts)
-* [Ownership](4-ownership)
+* [Rust Setup](00-setup)
+* [Hello World und Cargo](01-cargo-helloworld)
+* [Common Concepts](03-common-concepts)
+* [Ownership](04-ownership)
 * [Aufgabe: Das Palindrom in Rust](projects/01-palindrom)
 * [Structs](06-structs)
 * [Enums und Pattern Matching](07-enums)

@@ -80,14 +80,31 @@ let r2 = &s; // compiler error
 println!("{}, {}", r1, r2);
 ```
 
-## 4.4 Slices
+## 4.3 Slices
 Damit können wir weiteren Datentyp verstehen: Slices. Sehr simpel, ähnlich Python:
 ```rust
-let my_string = String::from("Hello world");
-let hello = &my_string[0..5];
-let world = &my_string[6..];
+let numbers = [1, 2, 3, 4, 5];
+let one_to_three = &numbers[0..3];
+let last = &numbers[3..];
 
-println!("{}, {}!", hello, world);
+println!("{:?} - {:?}", one_to_three, last);
 ```
-Hier leihen wir uns 2x den String, bzw. Sicht auf Teil des Strings (Überschneidung spielt keine Rolle - jeder borrow leiht String komplett, geht nur weil immutable!).
-Bei Anfang/Ende könnnen wir uns Grenzen sparen. Funktioniert auch bei vielen anderen Typen (arrays, vecs, etc.).
+Hier leihen wir uns 2x das Array, bzw. Sicht auf Teil davon (Überschneidung spielt keine Rolle - jeder borrow leiht das Array komplett, geht nur weil immutable!).
+Bei Anfang/Ende könnnen wir uns Grenzen sparen. Funktioniert auch bei vielen anderen Typen (vecs, etc.).
+
+### String slices
+Besonders sind slices bei Strings - nicht verwunderlich, (UTF-8) Strings sind kompliziert!
+```rust
+let some_string = String::from("Hello world");
+
+let H_char = some_string[0]; // compiler error
+
+let world: &str = &some_string[6..];
+``` 
+Zunächst: Indexing geht nicht - denn es ist nicht klar, was zurückgegeben werden sollte (byte, codepoint, cluster).
+Aber wir können String slicen, weil dann klar ist, wie viele Bytes.
+
+Die Slice muss natürlich fixe Länge haben - deshalb ändert sich Type zu `&str` - String slice!
+Das ist auch der Typ von String Literals, daher sind die auch nicht veränderlich.
+
+Strings, die in der Größe unveränderlich sind, können wir also als `&str` speichern, veränderliche Strings als `String`.
