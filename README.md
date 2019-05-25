@@ -6,7 +6,7 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 
 ## Inhaltsverzeichnis
 
-* Einleitung
+* [Einleitung (Google Präsentation)](https://docs.google.com/presentation/d/1ca49PFscfrpXhTDzvaRxsDwGhxF6D5WZ4iXCr7JlTY4/edit?usp=sharing)
 * [Rust Setup](00-setup)
 * [Hello World und Cargo](01-cargo-helloworld)
 * [Common Concepts](03-common-concepts)
