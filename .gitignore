@@ -1,4 +1,12 @@
-/target
-**/*.rs.bk
+# Cargo build results
+target/
+
+# IntelliJ
 *.iml
 .idea
+
+# VSCode
+.vscode
+
+# Backup files from some editors
+*.rs.bk
