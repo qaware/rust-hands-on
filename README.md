@@ -21,7 +21,7 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 * I/O
 * Cargo und [crates.io](https://crates.io/)
 * [Smart Pointer](14-smart-pointer)
-* Concurrency
+* [Concurrency](15-concurrency)
 * Projektaufgabe: Echo und SMTP-Server in Rust
 * Outlook
 

@@ -1,0 +1,8 @@
+[package]
+name = "channels"
+version = "0.1.0"
+authors = ["Andreas Zitzelsberger <andreas.zitzelsberger@qaware.de>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6.5"
