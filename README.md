@@ -31,4 +31,5 @@ Dieses Projekt darf unter den Bedingungen der [MIT Lizenz](LICENSE) genutzt werd
 
 ## Siehe auch:
 
+* Rust Language Cheat Sheets: [cheats.rs](https://cheats.rs/)
 * Ein einfacher SMTP-Server in Rust: [github.com/az82/rust-smtp-server](https://github.com/az82/rust-smtp-server)
