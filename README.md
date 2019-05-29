@@ -6,7 +6,7 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 
 ## Inhaltsverzeichnis
 
-* [Einleitung (Google Präsentation)](https://docs.google.com/presentation/d/1ca49PFscfrpXhTDzvaRxsDwGhxF6D5WZ4iXCr7JlTY4/edit?usp=sharing)
+* [Einleitung (Google Präsentation)](https://docs.google.com/presentation/d/1ca49PFscfrpXhTDzvaRxsDwGhxF6D5WZ4iXCr7JlTY4/edit#slide=id.p)
 * [Rust Setup](00-setup)
 * [Hello World und Cargo](01-cargo-helloworld)
 * [Common Concepts](03-common-concepts)
@@ -23,7 +23,7 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 * [Smart Pointer](14-smart-pointer)
 * [Concurrency](15-concurrency)
 * Projektaufgabe: Echo und SMTP-Server in Rust
-* Outlook
+* [Ausblick (Google Präsentation)](https://docs.google.com/presentation/d/1ca49PFscfrpXhTDzvaRxsDwGhxF6D5WZ4iXCr7JlTY4/edit#slide=id.g588e78b762_1_0)
 
 ## Lizenz
 
