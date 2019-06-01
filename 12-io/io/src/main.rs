@@ -49,11 +49,11 @@ fn main() -> Result<(), Error> {
 }
 
 fn print_summary(home: &Home) {
-    print_summary_for(&home.thermometer_living_room);
-    print_summary_for(&home.barometer);
+    print_summary_from(&home.thermometer_living_room);
+    print_summary_from(&home.barometer);
 }
 
-fn print_summary_for<T>(system: &T)
+fn print_summary_from<T>(system: &T)
     where T: Summary
 {
     println!("{}", system.summarize());
@@ -136,3 +136,34 @@ fn init() -> Result<Home, Error> {
         barometer,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hello_test() -> Result<(), String> {
+        let list = vec![Measure { time: 10, value: 1100 },
+                        Measure { time: 25, value: 2000 },
+                        Measure { time: 33, value: 1000 },
+                        Measure { time: 41, value: 1500 }];
+
+        let result = find_max(&list);
+
+//        assert_eq!(result.value, 2000, "find_max result passt net");
+        if result.value == 2000 {
+            Ok(())
+        } else {
+            Err(String::from("find_max result passt net"))
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn failing_test() {
+        let list: Vec<Measure<i32>> = Vec::new();
+
+        find_max(&list);
+    }
+}
+

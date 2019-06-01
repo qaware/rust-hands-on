@@ -1,4 +1,7 @@
 use std::io::Error;
+use std::io;
+use std::fs;
+use std::env;
 
 struct Home {
     thermometer_living_room: Thermometer,
@@ -49,11 +52,11 @@ fn main() -> Result<(), Error> {
 }
 
 fn print_summary(home: &Home) {
-    print_summary_for(&home.thermometer_living_room);
-    print_summary_for(&home.barometer);
+    print_summary_from(&home.thermometer_living_room);
+    print_summary_from(&home.barometer);
 }
 
-fn print_summary_for<T>(system: &T)
+fn print_summary_from<T>(system: &T)
     where T: Summary
 {
     println!("{}", system.summarize());
@@ -106,18 +109,31 @@ fn find_ultimate_max<'a, T: std::cmp::PartialOrd>(list: &'a [Measure<T>], other:
 }
 
 fn init() -> Result<Home, Error> {
+    //let mut input = String::new(); // Read via std-in.
+    //io::stdin().read_line(&mut input)?;
+
+    let arguments: Vec<String> = env::args().collect();
+    let input = fs::read_to_string(&arguments[1])?;
+
+    let splitted_input: Vec<&str> = input.split(' ').collect();
+    let measures: Vec<Measure<i32>> = splitted_input.chunks(2)
+        .filter(|chunk| chunk[0].parse::<u64>().is_ok() && chunk[1].parse::<i32>().is_ok())
+        .map(|chunk|
+
+            Measure {
+                time: chunk[0].parse().unwrap_or(0),
+                value: chunk[1].parse().unwrap_or(0),
+            }
+        ).collect();
+
     let thermometer_living_room = Thermometer {
-        time_series_in_celsius: vec![
-            Measure { time: 10, value: -5},
-            Measure {time: 25, value: 2 },
-            Measure { time: 33, value: 10 },
-            Measure { time: 40, value: 8 }],
+        time_series_in_celsius: measures
     };
 
     let thermometer_kitchen = Thermometer {
         time_series_in_celsius: vec![
-            Measure { time: 10, value: 10 },
-            Measure { time: 25, value: 11 },
+            Measure { time: 10, value: 10},
+            Measure {time: 25, value: 11, },
             Measure { time: 33, value: 20 },
             Measure { time: 40, value: 18 }],
     };
@@ -136,3 +152,34 @@ fn init() -> Result<Home, Error> {
         barometer,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hello_test() -> Result<(), String> {
+        let list = vec![Measure { time: 10, value: 1100 },
+                        Measure { time: 25, value: 2000 },
+                        Measure { time: 33, value: 1000 },
+                        Measure { time: 41, value: 1500 }];
+
+        let result = find_max(&list);
+
+//        assert_eq!(result.value, 2000, "find_max result passt net");
+        if result.value == 2000 {
+            Ok(())
+        } else {
+            Err(String::from("find_max result passt net"))
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn failing_test() {
+        let list: Vec<Measure<i32>> = Vec::new();
+
+        find_max(&list);
+    }
+}
+

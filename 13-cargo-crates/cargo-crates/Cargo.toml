@@ -1,7 +1,8 @@
 [package]
-name = "testing"
+name = "cargo-crates"
 version = "0.1.0"
 authors = ["c.weber"]
 edition = "2018"
 
 [dependencies]
+
