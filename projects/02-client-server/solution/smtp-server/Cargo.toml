@@ -1,0 +1,10 @@
+[package]
+name = "rust-smtp-server"
+version = "0.1.0"
+authors = ["Andreas Zitzelsberger <az@az82.de>"]
+edition = "2018"
+
+[dependencies]
+threadpool = "1.7.1"
+num_cpus = "1.0"
+clap = "2.32.0"
