@@ -66,7 +66,10 @@ fn print_mips(home: &Home) {
     let max_temperature = find_max(&home.thermometer_kitchen.time_series_in_celsius);
     println!("Temparature Kitchen Max: Measured at {} - {} C", max_temperature.time, max_temperature.value);
 
-    let overall_max = find_ultimate_max(&home.thermometer_kitchen.time_series_in_celsius, &home.thermometer_living_room.time_series_in_celsius);
+    let overall_max = find_ultimate_max(
+        &home.thermometer_kitchen.time_series_in_celsius,
+        &home.thermometer_living_room.time_series_in_celsius,
+    );
     println!("Temparature Overall Max: Measured at {} - {} C", overall_max.time, overall_max.value);
 
     let max_air_pressure = find_max(&home.barometer.time_series_in_pascal);

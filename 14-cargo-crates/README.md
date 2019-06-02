@@ -4,7 +4,7 @@ Also wir wissen schon, dass man mit cargo unsere Projekte `build` und `test` kö
 
 Aber Cargo hat auch einen Paket-Manager!
 
-`https://crates.io/`
+[https://crates.io/](https://crates.io/)
 
 ```
 [dependencies]
@@ -28,5 +28,3 @@ Generell bietet Rust eine breite domäne an Frameworks an, für einige Domänen 
 Ein weiteres Feature falls ich das noch nicht erwähnt habe, ist dass cargo auch in der Lage ist für libraries gleich die doku zu generieren.
 
 Ferner können wir mit npm auch executables installiert werden und Ausgeführt werden.
-
-Ich bin jetzt soweit durch und übergebe mich an Andreas.

@@ -2,7 +2,7 @@
 ## 3.1 Variables and Mutability
 Vorab: unused-Warnungen deaktivieren
 ```rust
-#[allow(unused)]
+#![allow(unused)]
 ```
 
 Variablen deklarieren mit let:
@@ -30,11 +30,6 @@ let x = x + 1;
 let x = x * 2; 
 ```
 Ist möglich, neues binding -> typ muss nicht mut sein.
-```rust
-let spaces = "    ";
-let spaces = spaces.len();
-```
-Aber der Typ muss gleich sein!
 
 ## 3.2 Data Types
 
@@ -128,6 +123,7 @@ fn five() -> i32 {
     5
 }
 ```
+Besonderheit Rust: Expressions (geben Wert zurück) vs Statements (tun irgendwas).
 Letzte Expression wird zurückgegeben, hier die 5.
 Typischer Fehler: `;` am Ende -> `5;` ist ein Statement (wie Zuweisung), die Expression nach `;` wird zurückgegeben - hier ein leerer Typ/unit `()`.
 Explizite Rückgabe auch möglich:

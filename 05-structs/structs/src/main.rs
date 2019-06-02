@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 struct User {
     username: String,
     email: String,
@@ -56,9 +58,6 @@ impl Rectangle {
     }
 
     fn new(width: u32, height: u32) -> Rectangle {
-        Rectangle {
-            width,
-            height,
-        }
+        Rectangle { width, height }
     }
 }

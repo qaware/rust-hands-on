@@ -54,7 +54,7 @@ Den Backtrace trick in dem Fall kennen wir ja schon.
 
 *Generell* können wir auch mit cargo viele unterschiedliche Parameter ausführen, die würde ich allerdings aus Zeitgründen mal weglassen.
 
-Unabhängig davon: Richtig in unserem Fall ist natürlich, wenn wir die annotation mit #[should_panic] an die Methode kleben. Wie wir vorhin gesehen haben ist das aber nicht ganz optimal, weil wir nicht wirklich einschränken können wo die Panic auftritt und es zu false-positive kommen kann.
+Unabhängig davon: Richtig in unserem Fall ist natürlich, wenn wir die annotation mit `#[should_panic]` an die Methode kleben. Wie wir vorhin gesehen haben ist das aber nicht ganz optimal, weil wir nicht wirklich einschränken können wo die Panic auftritt und es zu false-positive kommen kann.
 
 Bei den asserts hingegen.
 
@@ -71,7 +71,7 @@ Natürlich können wir Unit-Tests auch ignorieren
 ```
 #[ignore]
 ```
-> `cargo test` auf das ignore hinweisen, und rükcgängig machen.
+> `cargo test` auf das ignore hinweisen, und rückgängig machen.
 
 Und auch bei Unit-tests können wir mit Results arbeiten:
 
@@ -96,9 +96,8 @@ Und auch bei Unit-tests können wir mit Results arbeiten:
 
 Man kann auch, wie sie in Rust heißen IntegrationTests schreiben. Dazu müsste man im root-Ordner einfach einen Ordner hinzufügen und dort zusätzliche rs-files ablegen.
 
-Im Gegensatz zu vohin müssen wir bei den Integration-Tests zuerst unser Programm importieren.
+Im Gegensatz zu vohin müssen wir bei den Integration-Tests zuerst unser Programm importieren - das ist nur für library-code möglich, nicht für binaries.
 
-Bei den IntegrationTests gilt allerdings eine restriktion, diese sind nur für lib-Projekte möglich.
 
 Diese Art von Projekten bieten einen nicht nur die IntegrationTests als Feature, sondern man kann mit ihnen auch Doc-Tests Definieren
 

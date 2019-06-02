@@ -23,4 +23,4 @@ fn main() {
 
 `println!` ist ein Makro zum schreiben auf stdout
 
-Ausführen: `cargo check`, `cargo build`, `cargo run`
+Ausführen: `cargo check`, `cargo build`, `cargo run`, `cargo fmt`

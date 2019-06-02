@@ -36,8 +36,6 @@ impl Stack<i32> for ConsList<i32> {
     }
 }
 
-
-
 fn main() {
     // Create a stack
     let mut stack = Rc::new(Nil.put(1).put(2).put(3).put(4));

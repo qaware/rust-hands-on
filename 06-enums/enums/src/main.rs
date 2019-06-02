@@ -1,6 +1,8 @@
+#![allow(unused)]
+
 enum IpAddr {
     V4(u8, u8, u8, u8), // Hat 4x u8
-    V6(String), // Hat 1x String
+    V6(String),         // Hat 1x String
 }
 
 enum Coin {
@@ -30,7 +32,7 @@ fn main() {
 
     match some_number {
         None => println!("Leer"),
-        Some(s2) => println!("Was drin: {}", s2)
+        Some(s2) => println!("Was drin: {}", s2),
     }
 
     let value = value_in_cents(Coin::Quarter);

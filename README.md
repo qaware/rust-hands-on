@@ -2,7 +2,7 @@
 
 Skript und Source Code für eine erste Hands-On Einführung in die Programmiersprache [Rust](https://www.rust-lang.org/).
 
-Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/book/) ausgerichtet und geht von einem Halbtages-Workshop aus.
+Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/book/) ausgerichtet (Section-Nummern verweisen auf Buchkapitel) und geht von einem Halbtages-Workshop aus.
 
 ## Inhaltsverzeichnis
 
@@ -12,17 +12,17 @@ Das Skript ist didaktisch entlang des [Rust Books](https://doc.rust-lang.org/boo
 * [Common Concepts](03-common-concepts)
 * [Ownership](04-ownership)
 * [Aufgabe: Das Palindrom in Rust](projects/01-palindrom)
-* [Structs](06-structs)
-* [Enums und Pattern Matching](07-enums)
+* [Structs](05-structs)
+* [Enums und Pattern Matching](06-enums)
 * [Collections](08-collections)
-* Generics, Traits, Lifetimes
 * [Error Handling](09-error-handling)
+* [Generics, Traits, Lifetimes](10-generics-traits-lifetimes)
 * [Testing](11-testing)
-* I/O
-* Cargo und [crates.io](https://crates.io/)
-* [Smart Pointer](14-smart-pointer)
-* [Concurrency](15-concurrency)
-* Projektaufgabe: Echo und SMTP-Server in Rust
+* [I/O](12-io)
+* [Cargo und crates.io](14-cargo-crates)
+* [Smart Pointer](15-smart-pointer)
+* [Concurrency](16-concurrency)
+* [Projektaufgabe: Echo und SMTP-Server in Rust](projects/02-client-server)
 * [Ausblick (Google Präsentation)](https://docs.google.com/presentation/d/1ca49PFscfrpXhTDzvaRxsDwGhxF6D5WZ4iXCr7JlTY4/edit#slide=id.g588e78b762_1_0)
 
 ## Lizenz

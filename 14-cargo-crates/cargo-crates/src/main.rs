@@ -1,7 +1,7 @@
-use std::io::Error;
-use std::io;
-use std::fs;
 use std::env;
+use std::fs;
+use std::io;
+use std::io::Error;
 
 struct Home {
     thermometer_living_room: Thermometer,
@@ -69,15 +69,22 @@ fn print_mips(home: &Home) {
     let max_temperature = find_max(&home.thermometer_kitchen.time_series_in_celsius);
     println!("Temparature Kitchen Max: Measured at {} - {} C", max_temperature.time, max_temperature.value);
 
-    let overall_max = find_ultimate_max(&home.thermometer_kitchen.time_series_in_celsius, &home.thermometer_living_room.time_series_in_celsius);
+    let overall_max = find_ultimate_max(
+        &home.thermometer_kitchen.time_series_in_celsius,
+        &home.thermometer_living_room.time_series_in_celsius
+    );
     println!("Temparature Overall Max: Measured at {} - {} C", overall_max.time, overall_max.value);
 
     let max_air_pressure = find_max(&home.barometer.time_series_in_pascal);
-    println!("Air-Pressure Max: Measured at {} - {} Pa", max_air_pressure.time, max_air_pressure.value);
+    println!(
+        "Air-Pressure Max: Measured at {} - {} Pa",
+        max_air_pressure.time, max_air_pressure.value
+    );
 }
 
 fn find_max<T>(list: &[Measure<T>]) -> &Measure<T>
-    where T: std::cmp::PartialOrd
+where
+    T: std::cmp::PartialOrd,
 {
     let mut max = &list[0];
 
@@ -116,18 +123,17 @@ fn init() -> Result<Home, Error> {
     let input = fs::read_to_string(&arguments[1])?;
 
     let splitted_input: Vec<&str> = input.split(' ').collect();
-    let measures: Vec<Measure<i32>> = splitted_input.chunks(2)
+    let measures: Vec<Measure<i32>> = splitted_input
+        .chunks(2)
         .filter(|chunk| chunk[0].parse::<u64>().is_ok() && chunk[1].parse::<i32>().is_ok())
-        .map(|chunk|
-
-            Measure {
-                time: chunk[0].parse().unwrap_or(0),
-                value: chunk[1].parse().unwrap_or(0),
-            }
-        ).collect();
+        .map(|chunk| Measure {
+            time: chunk[0].parse().unwrap_or(0),
+            value: chunk[1].parse().unwrap_or(0),
+        })
+        .collect();
 
     let thermometer_living_room = Thermometer {
-        time_series_in_celsius: measures
+        time_series_in_celsius: measures,
     };
 
     let thermometer_kitchen = Thermometer {
@@ -182,4 +188,3 @@ mod tests {
         find_max(&list);
     }
 }
-

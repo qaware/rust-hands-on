@@ -16,14 +16,14 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 
-    // Join, or else the child thread will be terminated when the main thread 
+    // Join, or else the child thread will be terminated when the main thread
     // ends
     child_thread_1.join().unwrap();
 
-    // Some string value. 
+    // Some string value.
     let s = "🔥 tatütata 🚒";
 
-    // The following won't compile as there's a lifetime mismatch. 
+    // The following won't compile as there's a lifetime mismatch.
     // The thread might live longer than s
     // thread::spawn(|| {
     //     println!("{}", s)
@@ -31,14 +31,9 @@ fn main() {
 
     // Use move to force move values into the thread scope
     // Alternatively we could use a static lifetime for s
-    thread::spawn(move || {
-        println!("{}", s)
-    }).join().unwrap();
+    thread::spawn(move || println!("{}", s)).join().unwrap();
 
     // Alternatively we could use a static lifetime for s
     static S: &str = "🍩 tatütata 🚓";
-    thread::spawn(|| {
-        println!("{}", S)
-    }).join().unwrap();
-
+    thread::spawn(|| println!("{}", S)).join().unwrap();
 }

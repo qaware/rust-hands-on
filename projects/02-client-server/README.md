@@ -2,7 +2,7 @@
 ## Echo-server
 Schreibt einen simplen Server, der eingehende Verbindungen akzeptiert, und nach jeder gelesenen Zeile eine Zeile mit dem selben Inhalt zurück sendet.
 
-Für den Server gibt es ein ein [Grundgerüst](server-template), was euch das lästige connection aufbauen/thread starten abnimmt.
+Für den Server gibt es ein ein [Grundgerüst](server-template/), was euch das lästige connection aufbauen/thread starten abnimmt.
 
 Einen [Beispiel-Client](client/) gibt es auch, ausführen könnt ihr ihn mit:
 ```bash

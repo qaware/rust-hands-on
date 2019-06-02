@@ -1,4 +1,5 @@
 #![allow(unused)]
+
 fn main() {
     {
         let mut x = 5;
@@ -13,9 +14,6 @@ fn main() {
 
         let x = x + 1;
         let x = x * 2;
-
-        let spaces = "   ";
-        let spaces_ = spaces.len();
     }
     {
         let number: u32 = "42".parse().unwrap();

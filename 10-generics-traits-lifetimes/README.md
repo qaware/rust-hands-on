@@ -35,7 +35,7 @@ Definieren eines generischen Methode:
 ```
 impl<T> Measure<T> {
     fn get_value(&self) -> &T {
-        &self.value //; can be ommitet
+        &self.value
     }
 }
 ```
@@ -71,7 +71,7 @@ trait Summary {
 }
 ```
 
-Mit einer Default Imiplementieren:
+Mit einer Default Implementierung:
 
 ```
 trait Summary {
@@ -118,7 +118,7 @@ Damit will ich klarstellen, dass Traits unabhängig von dem Datentypen sind, sie
 
 *Vorsicht* in unserem Fall ist der Struct und der Trait im selben Scope. Wollen wir einen fremden Trait benutzen müssen wir diesen erst importieren.
 
-Ferner ist die orphane rule zu beachten. Wir können keine externen Traits für externe Typen implementieren. Summary und Barometer sind locale Typen, wir können auch `Display` für den lokalen Typ `Barometer` implementieren. Wir können aber den `Display` Trait nicht für den `Vec<>` oder den `Summary` implementieren. This restriction is part of a property of programs called coherence, and more specifically the orphan rule, so named because the parent type is not present. This rule ensures that other people’s code can’t break your code and vice versa.
+Ferner ist die orphane rule zu beachten. Wir können keine externen Traits für externe Typen implementieren. Summary und Barometer sind locale Typen, wir können auch `Display` für den lokalen Typ `Barometer` implementieren. Wir können aber den `Display` Trait nicht für den `Vec<>` oder den `Summary` implementieren: 'This restriction is part of a property of programs called coherence, and more specifically the orphan rule, so named because the parent type is not present. This rule ensures that other people’s code can’t break your code and vice versa.'
 
 Wir können aber auch Traits in Methodenparametern verwenden:
 
@@ -276,14 +276,14 @@ So wie ich das jetzt schon geschrieben habe ist auch die syntax von Lifetimes, s
 
 ```
 fn main() {
-    let a = 5;
-    let b = 10;
+    let x = 5;
+    let y = 10;
 
-    foo(&a, &b);
+    foo(&x, &y);
 }
 
-fn foo(a : &i32, b: &i32) {
-    println!("{}, {}", a, b)
+fn foo(x: &i32, y: &i32) {
+    println!("{}, {}", x, y)
 }
 ```
 
@@ -294,45 +294,45 @@ In vielen Fällen muss man keine explizite Angabe von Lifetimes machen unser akt
 
 * Jeder Eingabe Parameter mit einer Referenz erhält seine eigene Lifetime
 * Gibt es bloß einen Eingabe Lifetime-Parameter entspricht der Ausgabe-Parameter diesem
-* Is einer der Eingabe Parameter `self` oder `&mut self` wird die ausgabe-lebenszeit an `self` eingebunden
+* Is einer der Eingabe Parameter `self` oder `&mut self` wird die Ausgabe-Lebenszeit an `self` eingebunden
 
 Bei vielen fällen wie z.B. `fn foo(s: str) -> &str` klappt dass ganz gut, aber wie gesagt, findet der Compiler nach der Prüfung noch "lücken" oder es gibt Probleme wird der Vorgang mit einem Fehler abgebrochen.
 
 Erweitern wir mal unser Beispiel:
 
 ```
-fn foo(a : &i32, b: &i32) -> &i32 {
-    if a > b {
-        a
+fn foo(x: &i32, y: &i32) -> &i32 {
+    if x > y {
+        x
     } else {
-        b
+        y
     }
 }
 ```
 
-`println!("{}", foo(&a, &b));`
+`println!("{}", foo(&x, &y));`
 
 > Cargo run führt zu `expected lifetime parameter`.
 
 Aus Sicht von Rust, nach Anwendung der genannten Regeln sieht `foo` folgendermaßen aus:
 ```
-fn foo<'a, 'b>(a : &'a i32, b: &'b i32) -> &?i32 {
+fn foo<'a, 'b>(x: &'a i32, y: &'b i32) -> &?i32 {
   ...
 ```
 Der Compiler könnte einfach eine Lifetime erfinden, die würde allerdings mit dem verlassen des Scopes der Methode enden, deswegen macht ein neuer Scope keinen Sinn. Es muss einer der beiden Eingabe lifetimes sein, aber den richtigen kann der RustCompiler leider nicht feststellen.
 
 Wir müssen also Rust helfen:
 ```
-fn foo<'a>(a : &'a i32, b: &'a i32) -> &'a i32 {
+fn foo<'a>(x: &'a i32, y: &'a i32) -> &'a i32 {
 ```
 
 Ändern wir jetzt wieder die Lebenszeit der Variablen:
 ```
 fn main() {
-    let a = 5;
-    let b = 10;
+    let x = 5;
+    let y = 10;
 
-    let result = foo(&a, &b);
+    let result = foo(&x, &y);
     println!("{}", result);
 }
 ```
@@ -340,12 +340,12 @@ fn main() {
 Funktioniert noch:
 ```
 fn main() {
-    let a = 5;
-    let b = 10;
+    let x = 5;
+    let y = 10;
 
     let result;
     {
-        result = foo(&a, &b);
+        result = foo(&x, &y);
     }
     println!("{}", result);
 }
@@ -354,18 +354,18 @@ fn main() {
 funktioniert auch noch:
 ```
 fn main() {
-    let a = 5;
+    let x = 5;
 
     let result;
     {
-        let b = 10;
-        result = foo(&a, &b);
+        let y = 10;
+        result = foo(&x, &y);
     }
     println!("{}", result);
 }
 ```
 
-funktioniert nicht mehr, weil b nicht lange genug lebt! Rust braucht die Lifetimes um zu evaluieren wie lange ein Parameter lebt und steigt aus, sobald wir eine Variable benutzen wollen die nicht so lange lebt wie wir es mind bräuchten.
+funktioniert nicht mehr, weil `y` nicht lange genug lebt! Rust braucht die Lifetimes um zu evaluieren wie lange ein Parameter lebt und steigt aus, sobald wir eine Variable benutzen wollen die nicht so lange lebt wie wir es mind bräuchten.
 
 Jetzt muss ich als Java-Programmierer etwas aufpassen, weil ich mir nicht nur vorher Überlegen muss wem die Variablen gehören, sondern auch wie lange diese Leben sollen! Als Anfänger wird man hier schnell in Probleme laufen, das wichtigste ist verstehen *Warum* es nicht funktioniert. Und vorallem am Anfang finde ich es in Ordnung, wenn man *nachdem man es verstanden hat* das Struct einfach zu `.clone()` es muss einfach klar sein, dass das andauernde kopieren von Speicher sich zu einem laufzeittechnisches Problem entwickeln kann, das Problem bei der Wurzel zu lösen ist natürlich der richtigere Weg, aber bevor man garnicht mehr weiter kommt und total die Motivation verliert, kann man sowas machen.
 

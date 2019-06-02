@@ -1,5 +1,3 @@
-TODO: Für alle Kapitel kompilierbaren Code schreiben und einchecken
-
 # Structs
 
 Structs bündeln Daten, die zusammen gehören.
@@ -36,7 +34,7 @@ let mut user1 = User {
 user1.email = String::from("anotheremail@example.com");
 ```
 
-Wenn user1 mut ist, dann ist das gesamte Struct mut. Rust hat kein Konzept, einzelne Felder als mut zu markieren.
+Wenn `user1` `mut` ist, dann ist das gesamte Struct `mut`. Rust hat kein Konzept, einzelne Felder als `mut` zu markieren.
 
 ### Factory-Methode, erster Wurf:
 

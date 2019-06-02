@@ -51,7 +51,6 @@ fn print_mips(home: &Home) {
     println!("Air-Pressure Max: Measured at {} - {} Pa", max_air_pressure.time, max_air_pressure.value);
 }
 
-
 fn find_max_temperature(list: &[TemperatureMeasure]) -> &TemperatureMeasure {
     let mut max = &list[0];
 
@@ -75,7 +74,6 @@ fn find_max_pressure(list: &[AirPressureMeasure]) -> &AirPressureMeasure {
 
     max
 }
-
 
 fn init() -> Result<Home, Error> {
     let thermometer = Thermometer {

@@ -1,7 +1,7 @@
-use std::thread;
-use std::sync::mpsc;
-use std::time::Duration;
 use rand::Rng;
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
 
 fn single_producer_channel() {
     // Creating a new channel returns transmitter and receiver
@@ -13,7 +13,7 @@ fn single_producer_channel() {
         // Sending may fail if the receiving end has been dropped
         let s = String::from("Hi");
         tx.send(s).expect("Sending failed");
-        
+
         // s has been moved into the channel and cannot be used any more
         // println!("Sent: {}", s);
     });

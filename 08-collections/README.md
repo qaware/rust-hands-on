@@ -181,7 +181,7 @@ Ein Beispiel:
 "नमस्ते" sind 4 sichtbare "Zeichen". In UTF-8 sind das die Bytes `[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164, 224, 165, 135]`. Wenn man das in `char` parst, kommen immer noch 6 Zeichen
 `['न', 'म', 'स', '्', 'त', 'े']` raus. Das 4. und das 6. sind keine "Zeichen", die alleine stehen können. Die Grapeheme sind das, was am intuitivsten ist: `["न", "म", "स्", "ते"]`.
 Man hätte nun auch die Strings in UTF-32 speichern können, aber das verbraucht für viele Strings in unserem Raum 4x so viel Speicher wie nötig. Aber selbst UTF-32 würde nicht das Problem mit den Graphemen lösen.
-Strings sind einfach kompliziert.
+**Strings sind einfach kompliziert**.
 
 ## HashMaps
 
@@ -196,7 +196,7 @@ scores.insert(String::from("Blue"), 10); // "Blue" -> 10
 scores.insert(String::from("Yellow"), 50); // Yellow -> 50
 ```
 
-Der Typ wird über die insert-Methode bestimmt, das erste ist `String`, das zweite `i32`.
+Der Compiler kann den Typ hier über die insert-Methode bestimmen, das erste ist `String`, das zweite `i32`.
 
 ### Lesen
 
