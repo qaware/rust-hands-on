@@ -1,12 +1,10 @@
 use std::io::BufReader;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::net::{TcpListener, TcpStream};
 use std::{io, thread};
 
 fn main() {
     let port = 1337;
-    let localhost_addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), port);
-    let listener = TcpListener::bind(localhost_addr).expect("Port already in use!");
+    let listener = TcpListener::bind(("localhost", port)).expect("Port already in use!");
 
     // Wait for incoming connections
     for stream in listener.incoming() {

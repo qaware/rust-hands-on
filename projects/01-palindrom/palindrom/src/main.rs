@@ -36,7 +36,7 @@ fn palindrom2(input: &str) -> bool {
 
 // String umdrehen und vergleichen
 fn palindrom3(input: &str) -> bool {
-    let reversed = input.chars().rev().collect::<String>();
+    let reversed: String = input.chars().rev().collect();
 
     return reversed == input;
 }

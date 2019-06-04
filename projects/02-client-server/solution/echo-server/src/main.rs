@@ -2,7 +2,7 @@ extern crate clap;
 extern crate log;
 extern crate simple_logger;
 
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener};
+use std::net::TcpListener;
 use std::sync::{Arc, Mutex};
 use std::{io, thread};
 
@@ -30,11 +30,10 @@ fn main() -> io::Result<()> {
         )
         .get_matches();
 
-    let port = matches.value_of("PORT").unwrap().parse::<u16>().unwrap();
-    let localhost_addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), port);
-    let listener = TcpListener::bind(localhost_addr)?;
+    let port: u16 = matches.value_of("PORT").unwrap().parse().unwrap();
+    let listener = TcpListener::bind(("localhost", port))?;
 
-    let msg_history = Arc::new(Mutex::new(Vec::<String>::new()));
+    let msg_history: Arc<Mutex<Vec<String>>> = Arc::new(Mutex::new(Vec::new()));
 
     // Wait for incoming connections
     for stream in listener.incoming() {

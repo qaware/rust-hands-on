@@ -64,7 +64,6 @@ impl Connection<BufReader<TcpStream>, TcpStream> {
 #[cfg(test)]
 mod tests {
     use super::Connection;
-    use std::str;
 
     #[test]
     fn test_send_line() {
@@ -72,12 +71,12 @@ mod tests {
 
         let result = Connection {
             reader: "".as_bytes(),
-            writer: &mut write_buffer.as_mut(),
+            writer: write_buffer.as_mut(),
         }
         .send_message("test\n");
 
         assert!(result.is_ok());
-        assert_eq!("test\n", str::from_utf8(&write_buffer[..5]).unwrap());
+        assert_eq!(b"test\n", &write_buffer[..5]);
         assert_eq!([0, 0, 0, 0, 0], &write_buffer[5..]);
     }
 
@@ -87,7 +86,7 @@ mod tests {
 
         let mut connection = Connection {
             reader: "\n".as_bytes(),
-            writer: &mut write_buffer.as_mut(),
+            writer: write_buffer.as_mut(),
         };
 
         // Empty line
@@ -105,7 +104,7 @@ mod tests {
 
         let mut connection = Connection {
             reader: "line1\nline2".as_bytes(),
-            writer: &mut write_buffer.as_mut(),
+            writer: write_buffer.as_mut(),
         };
 
         // First line

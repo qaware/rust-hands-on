@@ -3,7 +3,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::net::TcpStream;
 use std::sync::{Arc, Mutex};
 
-use log::{error, info};
+use log::info;
 
 /// Connection encapsulation
 pub struct Connection<R: BufRead, W: Write> {
@@ -15,19 +15,15 @@ impl<R: BufRead, W: Write> Connection<R, W> {
     /// Echo-server functionality. Appends to history.
     pub fn echo(mut self, history: Arc<Mutex<Vec<String>>>) -> io::Result<()> {
         for line in self.reader.lines() {
-            match history.lock() {
-                Ok(mut data) => {
-                    // Add new message and print the last three out
-                    data.push(line?);
-                    let last_msgs: Vec<&String> = data.iter().rev().take(3).collect();
-                    info!("Last three received messages: {:#?}", last_msgs);
-                    // Echo string
-                    self.writer.write_all(last_msgs[0].as_bytes())?;
-                    self.writer.write_all("\n".as_bytes())?;
-                    self.writer.flush()?;
-                }
-                Err(e) => error!("Could not access history. Cause: {}", e),
-            }
+            let mut data = history.lock().unwrap();
+            // Add new message and print the last three out
+            data.push(line?);
+            let last_msgs: Vec<&str> = data.iter().map(AsRef::as_ref).rev().take(3).collect();
+            info!("Last three received messages: {:#?}", last_msgs);
+            // Echo string
+            self.writer.write_all(last_msgs[0].as_bytes())?;
+            self.writer.write_all("\n".as_bytes())?;
+            self.writer.flush()?;
         }
 
         Ok(())
@@ -46,7 +42,6 @@ impl Connection<BufReader<TcpStream>, TcpStream> {
 
 #[cfg(test)]
 mod tests {
-    use std::str;
     use std::sync::{Arc, Mutex};
 
     use super::Connection;
@@ -58,20 +53,19 @@ mod tests {
 
         let result = Connection {
             reader: "echo!".as_bytes(),
-            writer: &mut write_buffer.as_mut(),
+            writer: write_buffer.as_mut(),
         }
         .echo(Arc::clone(&history));
 
         assert!(result.is_ok());
 
         // Check output stream
-        assert_eq!("echo!\n", str::from_utf8(&write_buffer[..6]).unwrap());
+        assert_eq!(b"echo!\n", &write_buffer[..6]);
         assert_eq!([0, 0, 0, 0], &write_buffer[6..]);
 
         // Check history
         let history_vec = history.lock().unwrap();
-        assert_eq!(history_vec.len(), 1);
-        assert_eq!(history_vec[0], "echo!")
+        assert_eq!(*history_vec, vec!["echo!"]);
     }
 
     #[test]
@@ -81,22 +75,17 @@ mod tests {
 
         let result = Connection {
             reader: "haaalo \necho!".as_bytes(),
-            writer: &mut write_buffer.as_mut(),
+            writer: write_buffer.as_mut(),
         }
         .echo(Arc::clone(&history));
 
         assert!(result.is_ok());
 
         // Check output stream
-        assert_eq!(
-            "haaalo \necho!\n",
-            str::from_utf8(&write_buffer[..14]).unwrap()
-        );
+        assert_eq!(b"haaalo \necho!\n", &write_buffer[..14]);
 
         // Check history
         let history_vec = history.lock().unwrap();
-        assert_eq!(history_vec.len(), 2);
-        assert_eq!(history_vec[0], "haaalo ");
-        assert_eq!(history_vec[1], "echo!");
+        assert_eq!(*history_vec, vec!["haaalo ", "echo!"]);
     }
 }
